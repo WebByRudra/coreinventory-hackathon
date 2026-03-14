@@ -2,66 +2,46 @@
 session_start();
 include "db.php";
 
-if(isset($_POST['login'])){
+if(isset($_POST['username'], $_POST['password'])){
+    $username = mysqli_real_escape_string($conn, $_POST['username']);
+    $password = mysqli_real_escape_string($conn, $_POST['password']);
 
-$email = $_POST['email'];
-$password = $_POST['password'];
+    $sql = "SELECT * FROM users WHERE username='$username' AND password='$password'";
+    $result = mysqli_query($conn, $sql);
 
-$query = "SELECT * FROM users WHERE email='$email' AND password='$password'";
-$result = mysqli_query($conn,$query);
+    if(mysqli_num_rows($result) == 1){
+        $user = mysqli_fetch_assoc($result);
+        $_SESSION['username'] = $user['username'];
+        $_SESSION['role'] = $user['role'];
 
-if(mysqli_num_rows($result)==1){
-
-$_SESSION['user']=$email;
-header("Location: dashboard.php");
-exit();
-
-}else{
-$error = "Invalid Email or Password";
-}
-
+        if($user['role'] == 'manager'){
+            header("Location: manager_dashboard.php");
+            exit();
+        } else {
+            header("Location: staff_dashboard.php");
+            exit();
+        }
+    } else {
+        $error = "Invalid username or password";
+    }
 }
 ?>
 
 <!DOCTYPE html>
 <html>
-
 <head>
-
-<title>CoreStock Login</title>
-
-<link rel="stylesheet" href="style.css">
-
+    <title>IMS Login</title>
 </head>
-
 <body>
+    <h2>Login</h2>
+    <?php if(isset($error)) echo "<p style='color:red;'>$error</p>"; ?>
 
-<div class="login-box">
+    <form method="POST">
+        <input type="text" name="username" placeholder="Username" required><br><br>
+        <input type="password" name="password" placeholder="Password" required><br><br>
+        <button type="submit">Login</button>
+    </form>
 
-<h2 class="logo">📦 CoreStock</h2>
-
-<h3>Login to Your Account</h3>
-
-<form method="POST">
-
-<input type="email" name="email" placeholder="Email" required>
-
-<input type="password" name="password" placeholder="Password" required>
-
-<button type="submit" name="login">Login</button>
-
-</form>
-
-<?php
-if(isset($error)){
-echo "<p style='color:red;'>$error</p>";
-}
-?>
-
-<p>Don't have an account? <a href="signup.php">Signup</a></p>
-
-</div>
-
+    <p>Don't have an account? <a href="signup.php">Sign Up</a></p>
 </body>
-
 </html>
