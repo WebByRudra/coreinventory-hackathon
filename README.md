@@ -26,7 +26,7 @@
 ![Login Page](screenshots/login.png)
 
 ### 2. Manager Dashboard
-![Manager Dashboard](screenshots/manager dash.png)
+![Manager Dashboard](screenshots/manager_dash.png)
 
 ### 3. Staff Dashboard
 ![Staff Dashboard](screenshots/staff dash.png)
@@ -41,10 +41,8 @@
 ![Stock In/Out](screenshots/stockin.png)
 ![Stock In/Out](screenshots/stockout.png)
 
-### 7. Transaction History
-![History](screenshots/history.png)
 
-### 8. Low Stock Alert
+### 7. Low Stock Alert
 ![Low Stock](screenshots/low_stock.png)
 
 ---
@@ -61,6 +59,7 @@
 
 ## 🎥 Demo Video
  
+
 
 ---
 
