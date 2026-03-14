@@ -7,29 +7,25 @@ if(!isset($_SESSION['username'])){
     exit();
 }
 
-// Reduce stock
+$products = mysqli_query($conn, "SELECT * FROM products");
+
 if(isset($_POST['product_id'], $_POST['quantity'])){
     $product_id = intval($_POST['product_id']);
     $quantity = intval($_POST['quantity']);
 
-    $res = mysqli_query($conn, "SELECT stock FROM products WHERE id=$product_id");
-    $row = mysqli_fetch_assoc($res);
-    if($row){
-        $new_stock = $row['stock'] - $quantity;
-        if($new_stock < 0) $new_stock = 0;
+    // Insert as pending delivery
+    $sql = "INSERT INTO stock_out (product_id, quantity, status, created_at) 
+            VALUES ($product_id, $quantity, 'pending', NOW())";
 
-        mysqli_query($conn, "UPDATE products SET stock=$new_stock WHERE id=$product_id");
-        $success = "Stock updated successfully!";
+    if(mysqli_query($conn, $sql)){
+        $success = "Delivery order recorded as pending. Confirm to deduct from inventory.";
     } else {
-        $error = "Product not found!";
+        $error = "Error: ".mysqli_error($conn);
     }
 }
-
-// Get all products for dropdown
-$products = mysqli_query($conn, "SELECT * FROM products");
 ?>
 
-<h2>Stock Out / Update</h2>
+<h2>Stock Out / Record Delivery</h2>
 
 <?php
 if(isset($error)) echo "<p style='color:red;'>$error</p>";
@@ -45,9 +41,23 @@ if(isset($success)) echo "<p style='color:green;'>$success</p>";
             </option>
         <?php } ?>
     </select><br><br>
-    <input type="number" name="quantity" placeholder="Quantity to reduce" required><br><br>
-    <button type="submit">Update Stock</button>
+    <input type="number" name="quantity" placeholder="Quantity" required><br><br>
+    <button type="submit">Record Delivery</button>
 </form>
+
+<h3>Pending Deliveries</h3>
+<ul>
+<?php
+$pending = mysqli_query($conn, "SELECT so.id, p.name, so.quantity 
+                                FROM stock_out so 
+                                JOIN products p ON so.product_id=p.id 
+                                WHERE so.status='pending'");
+while($row = mysqli_fetch_assoc($pending)){
+    echo "<li>".$row['name']." → ".$row['quantity']." units 
+          <a href='confirm_stock_out.php?id=".$row['id']."'>Confirm</a></li>";
+}
+?>
+</ul>
 
 <br>
 <a href="<?php echo $_SESSION['role']=='manager' ? 'manager_dashboard.php' : 'staff_dashboard.php'; ?>">Back to Dashboard</a>

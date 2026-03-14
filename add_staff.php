@@ -1,25 +1,27 @@
 <?php
+include 'db.php';
 session_start();
-include "db.php";
-
-// Only manager can access
-if(!isset($_SESSION['role']) || $_SESSION['role'] != "manager"){
+if(!isset($_SESSION['role']) || $_SESSION['role'] != 'manager') {
     header("Location: index.php");
     exit();
 }
 
-if(isset($_POST['name'], $_POST['username'], $_POST['password'])){
-
+if(isset($_POST['name'], $_POST['username'], $_POST['email'], $_POST['phone'], $_POST['password'])) {
     $name = mysqli_real_escape_string($conn, $_POST['name']);
     $username = mysqli_real_escape_string($conn, $_POST['username']);
+    $email = mysqli_real_escape_string($conn, $_POST['email']);
+    $phone = mysqli_real_escape_string($conn, $_POST['phone']);
     $password = mysqli_real_escape_string($conn, $_POST['password']);
+    $role = 'staff';
 
-    $check = mysqli_query($conn, "SELECT * FROM users WHERE username='$username'");
+    // Check for duplicates
+    $check = mysqli_query($conn, "SELECT * FROM users WHERE username='$username' OR email='$email' OR phone='$phone'");
     if(mysqli_num_rows($check) > 0){
-        $error = "Username already exists!";
+        $error = "Username, Email, or Phone already exists!";
     } else {
-        $sql = "INSERT INTO users (name, username, password, role) VALUES ('$name','$username','$password','staff')";
-        if(mysqli_query($conn, $sql)){
+        $insert = "INSERT INTO users (name, username, email, phone, password, role)
+                   VALUES ('$name','$username','$email','$phone','$password','$role')";
+        if(mysqli_query($conn, $insert)){
             $success = "Staff account created successfully!";
         } else {
             $error = "Error: " . mysqli_error($conn);
@@ -28,19 +30,28 @@ if(isset($_POST['name'], $_POST['username'], $_POST['password'])){
 }
 ?>
 
-<h2>Create Staff Account</h2>
-
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Staff</title>
+</head>
+<body>
+<h2>Add New Staff</h2>
 <?php
 if(isset($error)) echo "<p style='color:red;'>$error</p>";
 if(isset($success)) echo "<p style='color:green;'>$success</p>";
 ?>
 
 <form method="POST">
-    <input type="text" name="name" placeholder="Staff Name" required><br><br>
+    <input type="text" name="name" placeholder="Full Name" required><br><br>
     <input type="text" name="username" placeholder="Username" required><br><br>
+    <input type="email" name="email" placeholder="Email" required><br><br>
+    <input type="text" name="phone" placeholder="Phone Number" required><br><br>
     <input type="password" name="password" placeholder="Password" required><br><br>
-    <button type="submit">Create Staff</button>
+    <button type="submit">Add Staff</button>
 </form>
 
 <br>
 <a href="manager_dashboard.php">Back to Dashboard</a>
+</body>
+</html>
