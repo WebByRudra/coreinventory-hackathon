@@ -29,7 +29,7 @@
 ![Manager Dashboard](screenshots/manager_dash.png)
 
 ### 3. Staff Dashboard
-![Staff Dashboard](screenshots/staff dash.png)
+![Staff Dashboard](screenshots/staff_dash.png)
 
 ### 4. Add Product (with Warehouse)
 ![Add Product](screenshots/addproduct.png)
@@ -42,8 +42,6 @@
 ![Stock In/Out](screenshots/stockout.png)
 
 
-### 7. Low Stock Alert
-![Low Stock](screenshots/low_stock.png)
 
 ---
 
@@ -62,8 +60,3 @@
 
 
 ---
-
-## 📂 Setup Instructions
-1. Clone the repository:  
-   ```bash
-   git clone https://github.com/WebByRudra/coreinventory-hackathon.git
