@@ -1,4 +1,4 @@
-/* GLOBAL RESET */
+/* ------------------ GLOBAL ------------------ */
 * {
   margin: 0;
   padding: 0;
@@ -8,39 +8,19 @@
 }
 
 body {
-  background: linear-gradient(135deg, #1a1a2e, #0f0f17);
+  background: linear-gradient(135deg, #1a1a2f, #0f0f17);
   color: #fff;
-  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 20px;
 }
 
-/* GLASS EFFECT */
-.glass {
-  background: rgba(255,255,255,0.05);
-  backdrop-filter: blur(15px);
-  border-radius: 20px;
-  padding: 25px;
-  margin: 20px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-}
-
-/* BUTTONS */
-button {
-  padding: 12px 25px;
-  border: none;
-  border-radius: 12px;
-  background: linear-gradient(135deg,#ff6ec4,#7873f5);
-  color: white;
-  cursor: pointer;
-  box-shadow: 0 5px 15px rgba(255,110,196,0.4);
-}
-button:hover {
-  transform: scale(1.1);
-  box-shadow: 0 8px 25px rgba(255,110,196,0.6);
-}
-
-/* HERO */
+/* ------------------ HERO ------------------ */
 .hero {
-  height: 90vh;
+  height: 30vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -51,39 +31,101 @@ button:hover {
 .hero h1 {
   font-size: 4rem;
   background: linear-gradient(90deg, #ff6ec4, #7873f5);
-  background-clip: text;          /* standard property for Firefox/Edge */
-  -webkit-background-clip: text;  /* Chrome/Safari */
-  color: transparent;             /* fallback for browsers that don't support clip */
-  -webkit-text-fill-color: transparent; /* Chrome/Safari */
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
   animation: glow 2s ease-in-out infinite alternate;
 }
 
+.hero .subtitle {
+  font-size: 1.2rem;
+  margin-top: 10px;
+  color: #ccc;
+}
+
+/* Glow animation */
 @keyframes glow {
   from { text-shadow: 0 0 5px #ff6ec4, 0 0 10px #7873f5; }
   to { text-shadow: 0 0 20px #ff6ec4, 0 0 30px #7873f5; }
 }
 
-/* NAVBAR */
-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 30px;
+/* ------------------ GLASS LOGIN CARD ------------------ */
+.login-card {
+  width: 350px;
+  text-align: center;
+  padding: 30px;
+  border-radius: 20px;
   background: rgba(255,255,255,0.05);
   backdrop-filter: blur(15px);
-  border-radius: 15px;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  margin-top: 30px;
+  animation: float 6s ease-in-out infinite;
 }
 
-/* FOOTER */
-footer {
-  text-align: center;
-  padding: 20px;
-  background: rgba(255,255,255,0.05);
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.login-card h2 {
+  margin-bottom: 20px;
+  color: #fff;
+}
+
+/* ------------------ INPUT FIELDS ------------------ */
+input {
+  width: 100%;
+  padding: 12px 15px;
+  margin: 10px 0;
   border-radius: 10px;
-  margin-top: 50px;
+  border: none;
+  outline: none;
+  background: rgba(255,255,255,0.05);
+  color: #fff;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  transition: all 0.3s ease;
 }
 
-html {
-  scroll-behavior: smooth;
+input:focus {
+  background: rgba(255,255,255,0.1);
+  box-shadow: 0 6px 25px rgba(120, 115, 245, 0.6);
+}
+
+/* ------------------ BUTTONS ------------------ */
+button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg,#ff6ec4,#7873f5);
+  color: #fff;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-top: 15px;
+  box-shadow: 0 5px 15px rgba(255,110,196,0.4);
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 25px rgba(255,110,196,0.6);
+}
+
+/* ------------------ SIGNUP TEXT ------------------ */
+.signup-text {
+  margin-top: 15px;
+  font-size: 0.9rem;
+  color: #ccc;
+}
+
+.signup-text a {
+  color: #ff6ec4;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.signup-text a:hover {
+  color: #7873f5;
 }
