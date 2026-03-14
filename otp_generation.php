@@ -18,7 +18,7 @@ if(isset($_POST['email'])) {
         mysqli_query($conn, "UPDATE users SET otp='$otp', otp_expiry='$expiry' WHERE id=".$user['id']);
 
         // Send email
-        $subject = "Your OTP Code for CoreStock IMS";
+        $subject = "Your OTP Code for CoreStock CoreStock";
         $message = "Hello ".$user['name'].",\n\nYour OTP is: $otp\nIt will expire in 5 minutes.\n\nThanks!";
         $headers = "From: noreply@corestock.com";
 

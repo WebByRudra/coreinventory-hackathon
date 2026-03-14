@@ -20,6 +20,9 @@ if(isset($_POST['product_id'], $_POST['warehouse'], $_POST['quantity'])){
     } else {
         mysqli_query($conn, "INSERT INTO product_stock_per_warehouse (product_id, warehouse, stock) VALUES ($product_id,'$warehouse',$quantity)");
     }
+    
+    // Update the overall stock in the products table
+    mysqli_query($conn, "UPDATE products SET stock = stock + $quantity WHERE id=$product_id");
 
     header("Location: stock_in.php");
     exit();

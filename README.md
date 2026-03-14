@@ -66,10 +66,10 @@ xampp/htdocs/
 
 Open in browser:
 
-http://localhost:8888/corestock
+http://localhost:8888/coreinventory
 🎯 Use Case
 
-CoreStock helps warehouses and small businesses:
+CoreInventory helps warehouses and small businesses:
 
 Track incoming inventory (Receipts)
 

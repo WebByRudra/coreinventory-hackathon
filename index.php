@@ -4,26 +4,38 @@ include "db.php";
 
 if(isset($_POST['login_input'], $_POST['password'])){
     $login_input = mysqli_real_escape_string($conn, $_POST['login_input']);
-    $password = mysqli_real_escape_string($conn, $_POST['password']);
+    $password = $_POST['password']; // Get raw password for verification
 
     // Login using username OR email OR phone
     $sql = "SELECT * FROM users 
-            WHERE (username='$login_input' OR email='$login_input' OR phone='$login_input') 
-            AND password='$password'";
+            WHERE username='$login_input' OR email='$login_input' OR phone='$login_input'";
     $result = mysqli_query($conn, $sql);
 
     if(mysqli_num_rows($result) == 1){
         $user = mysqli_fetch_assoc($result);
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['username'] = $user['username'];
-        $_SESSION['role'] = $user['role'];
+        
+        // Check password (supports new hashes and legacy plain text)
+        $is_valid_password = false;
+        if(password_verify($password, $user['password']) || $password === $user['password']){
+            $is_valid_password = true;
+        }
 
-        if($user['role'] == 'manager'){
-            header("Location: manager_dashboard.php");
-            exit();
+        if($is_valid_password){
+            $role_normalized = trim(strtolower($user['role']));
+            
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['username'] = $user['username'];
+            $_SESSION['role'] = $role_normalized;
+
+            if($role_normalized == 'manager'){
+                header("Location: manager_dashboard.php");
+                exit();
+            } else {
+                header("Location: staff_dashboard.php");
+                exit();
+            }
         } else {
-            header("Location: staff_dashboard.php");
-            exit();
+            $error = "Invalid credentials!";
         }
     } else {
         $error = "Invalid credentials!";
@@ -36,7 +48,7 @@ if(isset($_POST['login_input'], $_POST['password'])){
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IMS | Secure Login</title>
+    <title>CoreStock | Secure Login</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -239,7 +251,7 @@ if(isset($_POST['login_input'], $_POST['password'])){
 
         <div class="footer-links">
             <p><a href="forgot_pass.php">Forgot Password?</a></p>
-            <p>New to IMS? <a href="signup.php">Create Account</a></p>
+            <p>New to CoreStock? <a href="signup.php">Create Account</a></p>
         </div>
     </div>
 

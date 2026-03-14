@@ -14,7 +14,7 @@ if(isset($_POST['otp'])){
     $res = mysqli_query($conn, "SELECT * FROM users WHERE email='$email' AND otp='$otp' AND otp_expiry >= NOW()");
     if(mysqli_num_rows($res) == 1){
         $_SESSION['otp_verified'] = true;
-        header("Location: reset_password.php");
+        header("Location: reset_pass.php");
         exit();
     } else {
         $error = "Invalid or expired OTP!";

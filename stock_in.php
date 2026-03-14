@@ -28,7 +28,7 @@ while($w = mysqli_fetch_assoc($warehouses_res)){
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stock In | IMS Pro</title>
+    <title>Stock In | CoreStock Pro</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -127,10 +127,12 @@ while($w = mysqli_fetch_assoc($warehouses_res)){
 <body>
 
 <nav>
-    <h2>Inventory Pro</h2>
-    <a href="manager_dashboard.php"><i class="fas fa-th-large"></i> Dashboard</a>
+    <h2>CoreStock</h2>
+    <a href="<?php echo $_SESSION['role']==='manager' ? 'manager_dashboard.php' : 'staff_dashboard.php'; ?>"><i class="fas fa-th-large"></i> Dashboard</a>
     <a href="products.php"><i class="fas fa-boxes"></i> Products</a>
+    <?php if(trim(strtolower($_SESSION['role'])) === 'manager'): ?>
     <a href="add_product.php"><i class="fas fa-plus-circle"></i> Add Product</a>
+    <?php endif; ?>
     <a href="stock_in.php" class="active"><i class="fas fa-arrow-circle-down"></i> Stock In</a>
     <a href="stock_out.php"><i class="fas fa-arrow-circle-up"></i> Stock Out</a>
     

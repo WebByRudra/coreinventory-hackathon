@@ -8,12 +8,13 @@ if(!isset($_SESSION['otp_verified']) || !$_SESSION['otp_verified']){
 }
 
 if(isset($_POST['password'], $_POST['confirm_password'])){
-    $password = mysqli_real_escape_string($conn, $_POST['password']);
-    $confirm = mysqli_real_escape_string($conn, $_POST['confirm_password']);
+    $password = $_POST['password'];
+    $confirm = $_POST['confirm_password'];
 
     if($password === $confirm){
         $email = $_SESSION['reset_email'];
-        mysqli_query($conn, "UPDATE users SET password='$password', otp=NULL, otp_expiry=NULL WHERE email='$email'");
+        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+        mysqli_query($conn, "UPDATE users SET password='$hashed_password', otp=NULL, otp_expiry=NULL WHERE email='$email'");
 
         session_unset();
         $success = "Password reset successful! <a href='index.php'>Login Now</a>";

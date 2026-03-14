@@ -1,8 +1,9 @@
 <?php
 include 'db.php';
 session_start();
-if(!isset($_SESSION['role']) || $_SESSION['role'] != 'manager') {
-    header("Location: index.php");
+if(!isset($_SESSION['role']) || trim(strtolower($_SESSION['role'])) != 'manager') {
+    $redirect = (isset($_SESSION['role']) && trim(strtolower($_SESSION['role'])) == 'staff') ? 'staff_dashboard.php' : 'index.php';
+    header("Location: " . $redirect);
     exit();
 }
 
@@ -11,7 +12,7 @@ if(isset($_POST['name'], $_POST['username'], $_POST['email'], $_POST['phone'], $
     $username = mysqli_real_escape_string($conn, $_POST['username']);
     $email = mysqli_real_escape_string($conn, $_POST['email']);
     $phone = mysqli_real_escape_string($conn, $_POST['phone']);
-    $password = mysqli_real_escape_string($conn, $_POST['password']);
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
     $role = 'staff';
 
     // Check for duplicates
@@ -35,7 +36,7 @@ if(isset($_POST['name'], $_POST['username'], $_POST['email'], $_POST['phone'], $
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Staff | IMS Management</title>
+    <title>Add Staff | CoreStock Management</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -133,7 +134,7 @@ if(isset($_POST['name'], $_POST['username'], $_POST['email'], $_POST['phone'], $
 <body>
 
 <nav>
-    <h2>IMS Management</h2>
+    <h2>CoreStock Management</h2>
     <a href="manager_dashboard.php"><i class="fas fa-th-large"></i> Dashboard</a>
     <a href="products.php"><i class="fas fa-boxes"></i> Products</a>
     <a href="add_product.php"><i class="fas fa-plus-circle"></i> Add Product</a>

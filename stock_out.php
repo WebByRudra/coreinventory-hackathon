@@ -190,10 +190,12 @@ if(isset($_POST['product_id'], $_POST['warehouse'], $_POST['quantity'])){
 <body>
 
 <nav>
-    <h2><i class="fas fa-warehouse"></i> IMS Dispatch</h2>
-    <a href="manager_dashboard.php"><i class="fas fa-chart-pie"></i> Dashboard</a>
+    <h2><i class="fas fa-warehouse"></i> CoreStock Dispatch</h2>
+    <a href="<?php echo $_SESSION['role']==='manager' ? 'manager_dashboard.php' : 'staff_dashboard.php'; ?>"><i class="fas fa-chart-pie"></i> Dashboard</a>
     <a href="products.php"><i class="fas fa-boxes"></i> Inventory List</a>
+    <?php if(trim(strtolower($_SESSION['role'])) === 'manager'): ?>
     <a href="add_product.php"><i class="fas fa-plus-circle"></i> Add Product</a>
+    <?php endif; ?>
     <a href="stock_in.php"><i class="fas fa-arrow-circle-down"></i> Stock In</a>
     <a href="stock_out.php" class="active"><i class="fas fa-shipping-fast"></i> Stock Out</a>
     <a href="<?php echo ($role=='manager') ? 'manager_dashboard.php' : 'staff_dashboard.php'; ?>" style="margin-top:auto" class="return-link"><i class="fas fa-long-arrow-alt-left"></i> Return Home</a>

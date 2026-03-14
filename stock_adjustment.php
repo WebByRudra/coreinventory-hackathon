@@ -24,6 +24,9 @@ if(isset($_POST['product_id'], $_POST['warehouse'], $_POST['counted_stock'])){
 
         // Update stock
         mysqli_query($conn, "UPDATE product_stock_per_warehouse SET stock=$counted_stock WHERE id=".$row['id']);
+        
+        // Update global product stock
+        mysqli_query($conn, "UPDATE products SET stock = stock + $diff WHERE id=$product_id");
 
         // Log adjustment
         mysqli_query($conn, "

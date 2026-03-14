@@ -3,8 +3,9 @@ session_start();
 include "db.php";
 
 // Only manager can access
-if(!isset($_SESSION['role']) || $_SESSION['role'] != "manager"){
-    header("Location: index.php");
+if(!isset($_SESSION['role']) || trim(strtolower($_SESSION['role'])) != "manager"){
+    $redirect = (isset($_SESSION['role']) && trim(strtolower($_SESSION['role'])) == 'staff') ? 'staff_dashboard.php' : 'index.php';
+    header("Location: " . $redirect);
     exit();
 }
 
@@ -36,7 +37,7 @@ if(isset($_POST['name'], $_POST['sku'], $_POST['category'], $_POST['unit'], $_PO
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Product | IMS</title>
+    <title>Add Product | CoreStock</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -130,7 +131,7 @@ if(isset($_POST['name'], $_POST['sku'], $_POST['category'], $_POST['unit'], $_PO
 <body>
 
 <nav>
-    <h2>IMS Pro</h2>
+    <h2>CoreStock Pro</h2>
     <a href="manager_dashboard.php"><i class="fas fa-chart-pie"></i> Dashboard</a>
     <a href="products.php"><i class="fas fa-boxes"></i> Products</a>
     <a href="add_product.php" class="active"><i class="fas fa-plus-circle"></i> Add Product</a>

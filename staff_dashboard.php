@@ -3,7 +3,7 @@ session_start();
 include 'db.php';
 
 // Only staff can access
-if(!isset($_SESSION['role']) || $_SESSION['role'] != 'staff'){
+if(!isset($_SESSION['role']) || trim(strtolower($_SESSION['role'])) != 'staff'){
     header("Location: index.php");
     exit();
 }
@@ -20,7 +20,7 @@ $low_stock = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) AS total FR
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Staff Terminal | IMS</title>
+    <title>Staff Terminal | CoreStock</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -103,7 +103,7 @@ $low_stock = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) AS total FR
 <body>
 
 <nav>
-    <h2>IMS Staff</h2>
+    <h2>CoreStock Staff</h2>
     <a href="staff_dashboard.php" class="active"><i class="fas fa-home"></i> Dashboard</a>
     <a href="products.php"><i class="fas fa-boxes"></i> View Products</a>
     <a href="stock_out.php"><i class="fas fa-shipping-fast"></i> Stock Out</a>

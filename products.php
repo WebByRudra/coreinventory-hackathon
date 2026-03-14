@@ -15,7 +15,7 @@ $result = mysqli_query($conn, "SELECT * FROM products");
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Inventory | IMS</title>
+    <title>Product Inventory | CoreStock</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -88,8 +88,8 @@ $result = mysqli_query($conn, "SELECT * FROM products");
 <body>
 
 <nav>
-    <h2>IMS</h2>
-    <a href="manager_dashboard.php"><i class="fas fa-th-large"></i> <span>Dashboard</span></a>
+    <h2>CoreStock</h2>
+    <a href="<?php echo $_SESSION['role']==='manager' ? 'manager_dashboard.php' : 'staff_dashboard.php'; ?>"><i class="fas fa-th-large"></i> <span>Dashboard</span></a>
     <a href="products.php" class="active"><i class="fas fa-boxes"></i> <span>Products</span></a>
     <a href="stock_in.php"><i class="fas fa-arrow-down"></i> <span>Stock In</span></a>
     <a href="stock_out.php"><i class="fas fa-arrow-up"></i> <span>Stock Out</span></a>
