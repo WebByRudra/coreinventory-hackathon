@@ -1,9 +1,14 @@
 <?php
 
-$conn = mysqli_connect("localhost","root","","coreinventory");
+$host = "localhost";
+$user = "root";
+$password = "";
+$database = "coreinventory";
+
+$conn = mysqli_connect($host, $user, $password, $database);
 
 if(!$conn){
-die("Database connection failed");
+    die("Connection failed: " . mysqli_connect_error());
 }
 
 ?>
