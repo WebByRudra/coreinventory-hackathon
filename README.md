@@ -1,23 +1,29 @@
-CoreInventory Hackathon
+coreinventory-hackathon
 
-CoreInventory is a lightweight Inventory Management System (IMS) built to track product stock movement in warehouses.
-It allows businesses to manage products, record stock entries and exits, and monitor inventory in real time with role-based access for managers and staff.
+Inventory Management System
+
+CoreStock
+
+CoreStock is a lightweight inventory management system built to track product stock movement in warehouses.
+It allows businesses to manage products, record stock entries and exits, monitor inventory history in real time, and get low-stock alerts.
 
 🚀 Features
 
-Product Management → Add, view, and categorize products
+Product Management
 
-Stock In (Receipts) → Increase product stock (Manager only)
+Stock In (Receipts) with Pending Confirmation
 
-Stock Out (Deliveries) → Reduce product stock (Manager & Staff)
+Stock Out (Deliveries) with Pending Confirmation
 
-Dashboard Overview → Role-based dashboards for manager and staff
+Inventory Movement History
 
-User Management → Manager can create staff accounts
+Dashboard Overview with KPIs
 
-Inventory Movement Tracking → Real-time stock updates
+Low Stock Alerts
 
-Simple and Fast Interface → Easy to use for quick operations
+Multi-login: username / email / phone
+
+Simple and Fast Interface
 
 🏗️ Tech Stack
 
@@ -27,35 +33,25 @@ Database: MySQL
 Development Environment: XAMPP
 
 📂 Project Structure
-coreinventory/
-
-index.php              → Login page
-signup.php             → Create new user (manager/staff)
-manager_dashboard.php  → Manager dashboard
-staff_dashboard.php    → Staff dashboard
-products.php           → Product listing
-add_product.php        → Add new product
-stock_in.php           → Increase stock (Manager only)
-stock_out.php          → Reduce stock (Manager & Staff)
-add_staff.php          → Create new staff (Manager only)
-logout.php             → Logout session
-
-db.php                 → Database connection
-
-style.css              → Main styles
-script.js              → Client-side scripts
-
-database.sql           → Database schema
-
+corestock/
+index.php           → Login page
+signup.php          → User signup (manager/staff)
+manager_dashboard.php → Manager Dashboard with 4 KPIs
+staff_dashboard.php   → Staff Dashboard with 2 KPIs
+products.php        → Product listing with low stock alerts
+add_product.php     → Add new product
+stock_in.php        → Record stock entry (pending + confirm)
+confirm_stock_in.php → Confirm stock in
+stock_out.php       → Record stock exit (pending + confirm)
+confirm_stock_out.php → Confirm stock out
+history.php         → Inventory transaction history
+logout.php          → Logout session
+db.php              → Database connection
+sidebar.php         → Navigation sidebar
+style.css           → Main styles
+script.js           → Client-side scripts
+database.sql        → Database schema
 README.md
-🧑‍💼 User Roles & Default Credentials
-Role	Username	Password	Permissions
-Manager	admin	123	Add staff, add product, view products, stock in/out
-Staff	ravi	123	View products, stock out only
-Staff	sneha	123	View products, stock out only
-
-New users can be created via Sign Up (manager or staff).
-
 ⚙️ Setup Instructions
 
 Install XAMPP
@@ -70,70 +66,48 @@ xampp/htdocs/
 
 Open in browser:
 
-http://localhost/coreinventory/index.php
-
-Login with default credentials or create new users.
-
-🖥 Dashboard Navigation
-Manager
-
-Add Staff → Create staff accounts
-
-Add Product → Add new products
-
-View Products → View full inventory
-
-Stock Out → Reduce stock (product issued/sold)
-
-Stock In → Increase stock (new arrivals/returns)
-
-Logout → End session
-
-Staff
-
-View Products → See inventory
-
-Stock Out → Reduce stock
-
-Logout → End session
-
+http://localhost:8888/corestock
 🎯 Use Case
 
-CoreInventory helps warehouses and small businesses:
+CoreStock helps warehouses and small businesses:
 
-Track incoming inventory
+Track incoming inventory (Receipts)
 
-Monitor outgoing deliveries
+Monitor outgoing deliveries (Deliveries)
 
 Maintain a clear stock ledger
 
 Avoid stock mismatch
 
-🔄 Workflow Diagram
-        ┌────────────┐
-        │  Manager   │
-        └─────┬──────┘
-              │
-   ┌──────────┴──────────┐
-   │                     │
-Add Staff            Add Product
-   │                     │
-   ▼                     ▼
- Staff Accounts       Products Table
-   │                     │
-   └─────────┬───────────┘
-             │
-        Stock Updates
-  ┌──────────┴───────────┐
-  │                      │
-Stock In (Manager)   Stock Out (Manager/Staff)
-  │                      │
-  └──────────┬───────────┘
-             ▼
-      Products Table Updated
+Receive alerts for low-stock products
 
-This diagram shows manager creating staff/products → stock in/out → inventory updates workflow clearly.
+🧩 Workflow Diagram
+User (Manager/Staff)
+       │
+       ▼
+  Login / Signup
+       │
+       ▼
+Dashboard → KPIs: Total Products, Low Stock, Pending Receipts, Pending Deliveries
+       │
+       ├── Products
+       │      ├── Add Product
+       │      └── View Products (Low Stock Alerts + Search/Filter)
+       │
+       ├── Stock In (Receipts)
+       │      ├── Record Receipt (Pending)
+       │      └── Confirm Receipt → Stock Updated
+       │
+       ├── Stock Out (Delivery)
+       │      ├── Record Delivery (Pending)
+       │      └── Confirm Delivery → Stock Updated
+       │
+       ├── Internal Transfers (Planned)
+       │
+       └── Stock Adjustments (Planned)
+
+⚠ Low stock alerts appear on dashboard and product listings (<5 units).
 
 👨‍💻 Developed For
 
-Hackathon project focused on building a simple, functional, role-based IMS for inventory tracking.
+Hackathon project focused on building a simple but effective inventory tracking system.
