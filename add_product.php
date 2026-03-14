@@ -33,7 +33,8 @@ if(isset($_POST['name'], $_POST['sku'], $_POST['category'], $_POST['unit'], $_PO
 
 <!DOCTYPE html>
 <html>
-<head>
+<head><link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <title>Add Product</title>
     <style>
         body { font-family: Arial, sans-serif; padding: 20px; background-color: #f5f5f5; }

@@ -18,7 +18,7 @@ $low_stock = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) AS total FR
 
 <!DOCTYPE html>
 <html>
-<head>
+<head><link rel="stylesheet" href="style.css">
     <title>Staff Dashboard</title>
 </head>
 <body>

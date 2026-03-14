@@ -24,7 +24,7 @@ $pending_deliveries = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) AS
 
 <!DOCTYPE html>
 <html>
-<head>
+<head><link rel="stylesheet" href="style.css">
     <title>Manager Dashboard</title>
     <style>
         body { font-family: Arial, sans-serif; padding: 20px; background-color: #f5f5f5; }

@@ -33,7 +33,7 @@ if(isset($_POST['login_input'], $_POST['password'])){
 
 <!DOCTYPE html>
 <html>
-<head>
+<head><link rel="stylesheet" href="style.css">
     <title>IMS Login</title>
 </head>
 <body>

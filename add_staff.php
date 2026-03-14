@@ -32,7 +32,7 @@ if(isset($_POST['name'], $_POST['username'], $_POST['email'], $_POST['phone'], $
 
 <!DOCTYPE html>
 <html>
-<head>
+<head><link rel="stylesheet" href="style.css">
     <title>Add Staff</title>
 </head>
 <body>

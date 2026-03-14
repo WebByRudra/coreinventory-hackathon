@@ -1,38 +1,34 @@
 <?php
 session_start();
-include 'db.php';
+include "db.php";
 
-if(!isset($_SESSION['reset_user_id'])){
+if(!isset($_SESSION['otp_verified']) || !$_SESSION['otp_verified']){
     header("Location: forgot_pass.php");
     exit();
 }
 
-if(isset($_POST['reset_password'])){
-    $otp_input = mysqli_real_escape_string($conn, $_POST['otp']);
-    $new_password = mysqli_real_escape_string($conn, $_POST['new_password']);
+if(isset($_POST['password'], $_POST['confirm_password'])){
+    $password = mysqli_real_escape_string($conn, $_POST['password']);
+    $confirm = mysqli_real_escape_string($conn, $_POST['confirm_password']);
 
-    if($otp_input == $_SESSION['otp']){
-        $user_id = $_SESSION['reset_user_id'];
-        $update = "UPDATE users SET password='$new_password' WHERE id='$user_id'";
-        if(mysqli_query($conn, $update)){
-            echo "<p style='color:green;'>Password reset successful! <a href='index.php'>Login here</a></p>";
+    if($password === $confirm){
+        $email = $_SESSION['reset_email'];
+        mysqli_query($conn, "UPDATE users SET password='$password', otp=NULL, otp_expiry=NULL WHERE email='$email'");
 
-            // Clear session
-            unset($_SESSION['otp']);
-            unset($_SESSION['reset_user_id']);
-        } else {
-            $error = "Error updating password!";
-        }
+        session_unset();
+        $success = "Password reset successful! <a href='index.php'>Login Now</a>";
     } else {
-        $error = "Invalid OTP!";
+        $error = "Passwords do not match!";
     }
 }
 ?>
 
-<h2>Reset Password</h2>
-<?php if(isset($error)) echo "<p style='color:red;'>$error</p>"; ?>
 <form method="POST">
-    <input type="text" name="otp" placeholder="Enter OTP" required><br><br>
-    <input type="password" name="new_password" placeholder="New Password" required><br><br>
-    <button type="submit" name="reset_password">Reset Password</button>
+    <input type="password" name="password" placeholder="New Password" required>
+    <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+    <button type="submit">Reset Password</button>
 </form>
+<?php
+if(isset($error)) echo "<p style='color:red;'>$error</p>";
+if(isset($success)) echo "<p style='color:green;'>$success</p>";
+?>  

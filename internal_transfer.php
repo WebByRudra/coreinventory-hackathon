@@ -2,43 +2,82 @@
 session_start();
 include "db.php";
 
-// Only manager can access
-if(!isset($_SESSION['role']) || $_SESSION['role'] != 'manager'){
+if(!isset($_SESSION['role']) || $_SESSION['role'] != "manager"){
     header("Location: index.php");
     exit();
 }
 
-// Fetch all products
+// Fetch unique products
 $products = mysqli_query($conn, "SELECT * FROM products");
 
-// Fetch all locations (optional: define a locations table)
-$locations = ["Main Warehouse", "Production Floor", "Rack A", "Rack B"];
+// Fetch unique warehouses
+$warehouses_res = mysqli_query($conn, "SELECT DISTINCT warehouse FROM product_stock_per_warehouse");
+$warehouses = [];
+while($w = mysqli_fetch_assoc($warehouses_res)){
+    $warehouses[] = $w['warehouse'];
+}
 
-if(isset($_POST['product_id'], $_POST['from_location'], $_POST['to_location'], $_POST['quantity'])){
+// Handle internal transfer submission
+if(isset($_POST['product_id'], $_POST['from_warehouse'], $_POST['to_warehouse'], $_POST['quantity'])){
     $product_id = intval($_POST['product_id']);
-    $from_location = mysqli_real_escape_string($conn, $_POST['from_location']);
-    $to_location = mysqli_real_escape_string($conn, $_POST['to_location']);
+    $from = mysqli_real_escape_string($conn, $_POST['from_warehouse']);
+    $to = mysqli_real_escape_string($conn, $_POST['to_warehouse']);
     $quantity = intval($_POST['quantity']);
 
-    if($from_location == $to_location){
-        $error = "Source and destination cannot be the same!";
-    } elseif($quantity <= 0){
-        $error = "Enter a valid quantity!";
+    if($from == $to){
+        $error = "Source and destination warehouses cannot be the same.";
     } else {
-        // Optional: Check stock in source location (if multi-location)
-        // For now, assume always enough stock
-        
-        // Log transfer
-        $sql = "INSERT INTO internal_transfers (product_id, from_location, to_location, quantity) 
-                VALUES ($product_id, '$from_location', '$to_location', $quantity)";
-        if(mysqli_query($conn, $sql)){
-            $success = "Stock transfer logged successfully!";
+        // Check current stock in source warehouse
+        $res = mysqli_query($conn, "SELECT * FROM product_stock_per_warehouse WHERE product_id=$product_id AND warehouse='$from'");
+        $source = mysqli_fetch_assoc($res);
+        if(!$source || $source['stock'] < $quantity){
+            $error = "Not enough stock in source warehouse!";
         } else {
-            $error = "Error: ".mysqli_error($conn);
+            // Deduct from source
+            $new_source_stock = $source['stock'] - $quantity;
+            mysqli_query($conn, "UPDATE product_stock_per_warehouse SET stock=$new_source_stock WHERE id=".$source['id']);
+
+            // Add to destination
+            $res2 = mysqli_query($conn, "SELECT * FROM product_stock_per_warehouse WHERE product_id=$product_id AND warehouse='$to'");
+            if($dest = mysqli_fetch_assoc($res2)){
+                $new_dest_stock = $dest['stock'] + $quantity;
+                mysqli_query($conn, "UPDATE product_stock_per_warehouse SET stock=$new_dest_stock WHERE id=".$dest['id']);
+            } else {
+                mysqli_query($conn, "INSERT INTO product_stock_per_warehouse (product_id, warehouse, stock) VALUES ($product_id,'$to',$quantity)");
+            }
+
+            // Log transfer
+            mysqli_query($conn, "
+                INSERT INTO internal_transfers (product_id, from_warehouse, to_warehouse, quantity, status, created_at)
+                VALUES ($product_id,'$from','$to',$quantity,'done',NOW())
+            ");
+
+            $success = "Stock transferred successfully!";
         }
     }
 }
+
+// Fetch transfer history
+$transfers = mysqli_query($conn, "
+    SELECT it.id, p.name, it.from_warehouse, it.to_warehouse, it.quantity, it.created_at
+    FROM internal_transfers it
+    JOIN products p ON it.product_id = p.id
+    ORDER BY it.created_at DESC
+");
 ?>
+
+<!DOCTYPE html>
+<html>
+<head><link rel="stylesheet" href="style.css">
+    <title>Internal Transfers</title>
+    <style>
+        table { border-collapse: collapse; width: 100%; margin-top: 15px; }
+        th, td { border: 1px solid #000; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        form { margin-bottom: 20px; }
+    </style>
+</head>
+<body>
 
 <h2>Internal Stock Transfer</h2>
 
@@ -50,28 +89,48 @@ if(isset($success)) echo "<p style='color:green;'>$success</p>";
 <form method="POST">
     <select name="product_id" required>
         <option value="">Select Product</option>
-        <?php while($p = mysqli_fetch_assoc($products)){ ?>
-            <option value="<?php echo $p['id']; ?>"><?php echo $p['name']." (Stock: ".$p['stock'].")"; ?></option>
-        <?php } ?>
-    </select><br><br>
+        <?php while($p = mysqli_fetch_assoc($products)){
+            echo "<option value='{$p['id']}'>{$p['name']} ({$p['sku']})</option>";
+        } ?>
+    </select>
 
-    <select name="from_location" required>
-        <option value="">From Location</option>
-        <?php foreach($locations as $loc){ ?>
-            <option value="<?php echo $loc; ?>"><?php echo $loc; ?></option>
-        <?php } ?>
-    </select><br><br>
+    <select name="from_warehouse" required>
+        <option value="">From Warehouse</option>
+        <?php foreach($warehouses as $w) echo "<option value='$w'>$w</option>"; ?>
+    </select>
 
-    <select name="to_location" required>
-        <option value="">To Location</option>
-        <?php foreach($locations as $loc){ ?>
-            <option value="<?php echo $loc; ?>"><?php echo $loc; ?></option>
-        <?php } ?>
-    </select><br><br>
+    <select name="to_warehouse" required>
+        <option value="">To Warehouse</option>
+        <?php foreach($warehouses as $w) echo "<option value='$w'>$w</option>"; ?>
+    </select>
 
-    <input type="number" name="quantity" placeholder="Quantity" required><br><br>
+    <input type="number" name="quantity" placeholder="Quantity" required>
     <button type="submit">Transfer Stock</button>
 </form>
 
+<h3>Transfer History</h3>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Product</th>
+        <th>From</th>
+        <th>To</th>
+        <th>Quantity</th>
+        <th>Date</th>
+    </tr>
+    <?php while($t = mysqli_fetch_assoc($transfers)){ ?>
+    <tr>
+        <td><?php echo $t['id']; ?></td>
+        <td><?php echo $t['name']; ?></td>
+        <td><?php echo $t['from_warehouse']; ?></td>
+        <td><?php echo $t['to_warehouse']; ?></td>
+        <td><?php echo $t['quantity']; ?></td>
+        <td><?php echo $t['created_at']; ?></td>
+    </tr>
+    <?php } ?>
+</table>
+
 <br>
 <a href="manager_dashboard.php">Back to Dashboard</a>
+</body>
+</html>
